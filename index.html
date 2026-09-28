@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>머니포지션 대출계산기</title>
+</head>
+<body style="margin:0;background:#f4f8fb;">
+<div id="mp-loan-calc">
+  <style>
+    #mp-loan-calc{
+      --mp-navy:#173f63;
+      --mp-blue:#2d6f9e;
+      --mp-soft:#eef4f8;
+      --mp-line:#d8e2ea;
+      --mp-text:#222;
+      --mp-muted:#6c7780;
+      max-width:720px;
+      margin:28px auto;
+      color:var(--mp-text);
+      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans KR","Apple SD Gothic Neo",Arial,sans-serif;
+    }
+    #mp-loan-calc *{box-sizing:border-box}
+    #mp-loan-calc .mp-box{
+      background:#fff;
+      border:1px solid var(--mp-line);
+      border-radius:18px;
+      padding:24px;
+    }
+    #mp-loan-calc .mp-brand{
+      color:var(--mp-blue);
+      font-weight:900;
+      font-size:14px;
+      letter-spacing:.3px;
+      margin-bottom:6px;
+    }
+    #mp-loan-calc h3{
+      margin:0 0 8px;
+      font-size:26px;
+      line-height:1.35;
+      color:#111;
+    }
+    #mp-loan-calc .mp-intro{
+      margin:0 0 24px;
+      color:var(--mp-muted);
+      line-height:1.7;
+      font-size:15px;
+    }
+    #mp-loan-calc .mp-field{margin-bottom:18px}
+    #mp-loan-calc label{
+      display:block;
+      margin-bottom:7px;
+      font-size:14px;
+      font-weight:700;
+      color:#314455;
+    }
+    #mp-loan-calc .mp-input-row{
+      display:flex;
+      gap:8px;
+      align-items:center;
+    }
+    #mp-loan-calc input{
+      width:100%;
+      min-width:0;
+      padding:14px 15px;
+      border:1px solid #ccd8e2;
+      border-radius:10px;
+      font-size:19px;
+      font-weight:700;
+      color:var(--mp-navy);
+      outline:none;
+      background:#fff;
+    }
+    #mp-loan-calc input:focus{
+      border-color:var(--mp-blue);
+      box-shadow:0 0 0 3px rgba(45,111,158,.10);
+    }
+    #mp-loan-calc .mp-unit{
+      white-space:nowrap;
+      font-size:14px;
+      color:#66737e;
+    }
+    #mp-loan-calc .mp-amount-view{
+      margin-top:7px;
+      font-size:14px;
+      font-weight:700;
+      color:var(--mp-blue);
+    }
+    #mp-loan-calc .mp-btn{
+      width:100%;
+      border:0;
+      border-radius:11px;
+      padding:14px;
+      background:#2f73a6;
+      color:#fff;
+      font-size:16px;
+      font-weight:800;
+      cursor:pointer;
+    }
+    #mp-loan-calc .mp-results{
+      margin-top:24px;
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:12px;
+    }
+    #mp-loan-calc .mp-result{
+      background:var(--mp-soft);
+      border-radius:14px;
+      padding:18px;
+    }
+    #mp-loan-calc .mp-k{
+      font-size:13px;
+      color:#66737e;
+      margin-bottom:7px;
+    }
+    #mp-loan-calc .mp-v{
+      font-size:23px;
+      font-weight:900;
+      color:var(--mp-navy);
+      word-break:break-word;
+    }
+    #mp-loan-calc .mp-compare{
+      margin-top:18px;
+      padding:18px;
+      background:#f8fbfd;
+      border:1px solid var(--mp-line);
+      border-radius:14px;
+    }
+    #mp-loan-calc .mp-compare-title{
+      margin:0 0 12px;
+      font-size:15px;
+      font-weight:800;
+      color:var(--mp-navy);
+    }
+    #mp-loan-calc .mp-diff{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:10px;
+    }
+    #mp-loan-calc .mp-diff-box{
+      background:#fff;
+      border-radius:10px;
+      padding:14px;
+    }
+    #mp-loan-calc .mp-diff-label{
+      font-size:12px;
+      color:#6f7a83;
+      margin-bottom:5px;
+    }
+    #mp-loan-calc .mp-diff-value{
+      font-size:18px;
+      font-weight:800;
+      color:var(--mp-blue);
+    }
+    #mp-loan-calc .mp-tip{
+      margin-top:20px;
+      padding:16px 18px;
+      border-left:4px solid var(--mp-blue);
+      background:#f8fbfd;
+      line-height:1.75;
+      font-size:14px;
+    }
+    #mp-loan-calc .mp-tip strong{color:var(--mp-navy)}
+    #mp-loan-calc .mp-note{
+      margin-top:18px;
+      color:#7a858e;
+      font-size:12px;
+      line-height:1.7;
+    }
+    #mp-loan-calc .mp-footer{
+      text-align:center;
+      margin-top:24px;
+      padding-top:16px;
+      border-top:1px solid var(--mp-line);
+      color:#78838c;
+      font-size:12px;
+    }
+    #mp-loan-calc .mp-footer b{
+      display:block;
+      color:var(--mp-navy);
+      font-size:15px;
+      margin-bottom:4px;
+    }
+    @media(max-width:560px){
+      #mp-loan-calc .mp-results,
+      #mp-loan-calc .mp-diff{grid-template-columns:1fr}
+      #mp-loan-calc h3{font-size:23px}
+      #mp-loan-calc .mp-v{font-size:21px}
+    }
+  </style>
+
+  <div class="mp-box">
+    <div class="mp-brand">MONEY POSITION</div>
+    <h3>머니포지션 대출계산기</h3>
+    <p class="mp-intro">대출금액과 금리를 입력하면 월평균 이자와 비교금리 차이를 바로 계산합니다.</p>
+
+    <div class="mp-field">
+      <label for="mp-principal">대출금액</label>
+      <div class="mp-input-row">
+        <input id="mp-principal" type="text" inputmode="numeric" value="20,000" aria-describedby="mp-amount-view">
+        <span class="mp-unit">만원</span>
+      </div>
+      <div class="mp-amount-view" id="mp-amount-view">= 2억 원</div>
+    </div>
+
+    <div class="mp-field">
+      <label for="mp-rate">현재 금리</label>
+      <div class="mp-input-row">
+        <input id="mp-rate" type="number" min="0" step="0.01" value="4.0">
+        <span class="mp-unit">%</span>
+      </div>
+    </div>
+
+    <div class="mp-field">
+      <label for="mp-compare-rate">비교 금리</label>
+      <div class="mp-input-row">
+        <input id="mp-compare-rate" type="number" min="0" step="0.01" value="5.0">
+        <span class="mp-unit">%</span>
+      </div>
+    </div>
+
+    <button type="button" class="mp-btn" id="mp-calc-btn">계산하기</button>
+
+    <div class="mp-results" aria-live="polite">
+      <div class="mp-result">
+        <div class="mp-k">현재 금리 월평균 이자</div>
+        <div class="mp-v" id="mp-monthly">-</div>
+      </div>
+      <div class="mp-result">
+        <div class="mp-k">비교 금리 월평균 이자</div>
+        <div class="mp-v" id="mp-compare-monthly">-</div>
+      </div>
+    </div>
+
+    <div class="mp-compare">
+      <div class="mp-compare-title" id="mp-rate-diff-title">금리 차이</div>
+      <div class="mp-diff">
+        <div class="mp-diff-box">
+          <div class="mp-diff-label">월 이자 차이</div>
+          <div class="mp-diff-value" id="mp-monthly-diff">-</div>
+        </div>
+        <div class="mp-diff-box">
+          <div class="mp-diff-label">1년 이자 차이</div>
+          <div class="mp-diff-value" id="mp-annual-diff">-</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="mp-tip">
+      <strong>기억할 기준</strong><br>
+      대출 1억 원당 금리 1%포인트 차이 = 연 약 100만 원
+    </div>
+
+    <div class="mp-note">
+      ※ 월 이자는 연 이자를 12개월로 나눈 월평균값입니다. 실제 금융기관 이자는 일수 계산·원 단위 처리 방식 등에 따라 달라질 수 있습니다.
+    </div>
+
+    <div class="mp-footer">
+      <b>MONEY POSITION</b>
+      금리차이는 결국 현금흐름의 차이입니다.
+    </div>
+  </div>
+
+  <script>
+  (function(){
+    const root = document.getElementById("mp-loan-calc");
+    if (!root || root.dataset.ready === "1") return;
+    root.dataset.ready = "1";
+
+    const principalInput = root.querySelector("#mp-principal");
+    const rateInput = root.querySelector("#mp-rate");
+    const compareRateInput = root.querySelector("#mp-compare-rate");
+    const amountView = root.querySelector("#mp-amount-view");
+    const monthly = root.querySelector("#mp-monthly");
+    const compareMonthly = root.querySelector("#mp-compare-monthly");
+    const rateDiffTitle = root.querySelector("#mp-rate-diff-title");
+    const monthlyDiff = root.querySelector("#mp-monthly-diff");
+    const annualDiff = root.querySelector("#mp-annual-diff");
+    const calcBtn = root.querySelector("#mp-calc-btn");
+
+    function digitsOnly(v){
+      return String(v || "").replace(/[^0-9]/g,"");
+    }
+
+    function koreanAmount(manwon){
+      const won = manwon * 10000;
+      if (!won) return "= 0원";
+      const eok = Math.floor(won / 100000000);
+      const remainder = won % 100000000;
+      const man = Math.floor(remainder / 10000);
+      const parts = [];
+      if (eok) parts.push(eok.toLocaleString("ko-KR") + "억");
+      if (man) parts.push(man.toLocaleString("ko-KR") + "만");
+      return "= " + parts.join(" ") + " 원";
+    }
+
+    function wonExact(n){
+      if (!Number.isFinite(n)) return "-";
+      return n.toLocaleString("ko-KR", {
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 2
+      }) + "원";
+    }
+
+    function wonRounded(n){
+      if (!Number.isFinite(n)) return "-";
+      return Math.round(n).toLocaleString("ko-KR") + "원";
+    }
+
+    function syncAmount(){
+      const raw = digitsOnly(principalInput.value);
+      principalInput.value = raw ? Number(raw).toLocaleString("ko-KR") : "";
+      amountView.textContent = koreanAmount(Number(raw || 0));
+    }
+
+    function calc(){
+      const manwon = Number(digitsOnly(principalInput.value) || 0);
+      const rate = Number(rateInput.value || 0);
+      const compareRate = Number(compareRateInput.value || 0);
+      const principal = manwon * 10000;
+
+      const currentAnnual = principal * rate / 100;
+      const compareAnnual = principal * compareRate / 100;
+      const currentMonthly = currentAnnual / 12;
+      const compMonthly = compareAnnual / 12;
+
+      const diffRate = compareRate - rate;
+      const diffMonthly = compMonthly - currentMonthly;
+      const diffAnnual = compareAnnual - currentAnnual;
+
+      monthly.textContent = wonExact(currentMonthly);
+      compareMonthly.textContent = wonExact(compMonthly);
+
+      const direction = diffRate > 0 ? "상승" : diffRate < 0 ? "하락" : "동일";
+      rateDiffTitle.textContent =
+        "금리 차이 " + Math.abs(diffRate).toLocaleString("ko-KR", {maximumFractionDigits:2}) + "%p · " + direction;
+
+      const sign = diffMonthly > 0 ? "+ " : diffMonthly < 0 ? "- " : "";
+      const annualSign = diffAnnual > 0 ? "+ " : diffAnnual < 0 ? "- " : "";
+
+      monthlyDiff.textContent = sign + wonExact(Math.abs(diffMonthly));
+      annualDiff.textContent = annualSign + wonRounded(Math.abs(diffAnnual));
+    }
+
+    principalInput.addEventListener("input", syncAmount);
+    calcBtn.addEventListener("click", calc);
+    [principalInput, rateInput, compareRateInput].forEach(function(el){
+      el.addEventListener("keydown", function(e){
+        if(e.key === "Enter") calc();
+      });
+    });
+
+    syncAmount();
+    calc();
+  })();
+  </script>
+</div>
+</body>
+</html>
